@@ -54,6 +54,17 @@ export default class ReactAddToCalendar extends React.Component {
         this.toggleCalendarDropdown();
     }
 
+		_directDownloadICS(){
+			const url = helpers.buildUrl(this.props.event, 'ICS', this.state.isCrappyIE);
+			if (this.state.isCrappyIE && (e.currentTarget.getAttribute('class') === 'ical-link' ||
+					e.currentTarget.getAttribute('class') === 'outlook-calendar-link')) {
+					let blob = new Blob([url], {type: 'text/calendar'});
+					window.navigator.msSaveOrOpenBlob(blob, 'download.ics');
+			} else {
+					window.open(url, '_blank');
+			}
+		}
+
     renderDropdown() {
         let self = this;
 
@@ -123,7 +134,7 @@ export default class ReactAddToCalendar extends React.Component {
         return (
             <div className={this.props.buttonWrapperClass}>
                 <a className={buttonClass}
-                    onClick={this.toggleCalendarDropdown}>{buttonLabel}</a>
+                    onClick={this._directDownloadICS.bind(this)}>{buttonLabel}</a>
             </div>
         );
     }
